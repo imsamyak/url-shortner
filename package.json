@@ -1,0 +1,14 @@
+{
+  "name": "url-shortener-app",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --parallel -r dev",
+    "test:e2e": "pnpm --filter test test"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@scarf/scarf"
+    ]
+  }
+}
