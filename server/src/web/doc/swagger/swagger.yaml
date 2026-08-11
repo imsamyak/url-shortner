@@ -1,0 +1,205 @@
+openapi: 3.0.0
+info:
+  title: URL Shortener API
+  description: API documentation for the URL Shortener backend.
+  version: 1.0.0
+servers:
+  - url: "{protocol}://{host}:{port}/api/v1"
+    description: Dynamic API server
+    variables:
+      protocol:
+        enum:
+          - http
+          - https
+        default: http
+      host:
+        default: localhost
+        description: The host domain or IP
+      port:
+        default: "4000"
+        description: The port number (leave empty for default HTTP/HTTPS ports)
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - bearerAuth: []
+paths:
+  /auth/login:
+    post:
+      summary: User Login
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+  /auth/register:
+    post:
+      summary: User Registration
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - name
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                name:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "201":
+          description: Registration successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+  /auth/forgot-password:
+    post:
+      summary: Forgot Password
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        "200":
+          description: Reset link generated
+  /auth/reset-password:
+    post:
+      summary: Reset Password
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+                - newPassword
+              properties:
+                token:
+                  type: string
+                newPassword:
+                  type: string
+      responses:
+        "200":
+          description: Password reset successfully
+
+  /user/profile:
+    get:
+      summary: Get User Profile
+      responses:
+        "200":
+          description: Returns user profile
+    put:
+      summary: Update User Profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        "200":
+          description: Profile updated
+
+  /user/urls:
+    get:
+      summary: Get User's URLs
+      responses:
+        "200":
+          description: Returns list of user's shortened URLs
+
+  /url/:
+    post:
+      summary: Create Short URL
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - origin
+              properties:
+                origin:
+                  type: string
+                  format: uri
+                expiresAt:
+                  type: string
+                  format: date-time
+      responses:
+        "200":
+          description: Short URL created
+
+  /url/{shortId}:
+    get:
+      summary: Get Long URL
+      security: []
+      parameters:
+        - in: path
+          name: shortId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Returns the long URL
+    delete:
+      summary: Delete Short URL
+      parameters:
+        - in: path
+          name: shortId
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: URL deleted successfully
