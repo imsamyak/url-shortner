@@ -2,6 +2,7 @@ packages:
   - 'client'
   - 'server'
   - 'test/server'
+  - 'bin'
 allowBuilds:
   '@scarf/scarf': true
   bcrypt: true
