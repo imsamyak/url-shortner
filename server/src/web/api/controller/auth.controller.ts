@@ -40,6 +40,24 @@ export const register = async (req: Request, res: Response) => {
   }
 };
 
+// POST: /api/v1/auth/logout
+export const logout = async (req: Request, res: Response) => {
+  const logger = req.log;
+
+  try {
+    logger.debug("Logout: START");
+
+    const authService = new AuthService(req.context, logger);
+    await authService.logout();
+
+    logger.debug("Logout: SUCCESS");
+    return res.status(200).json({ message: "Logged out successfully" });
+  } catch (err) {
+    logger.error(err, "Logout: FAILED");
+    throw err;
+  }
+};
+
 // POST: /api/v1/auth/forgot-password
 export const forgotPassword = async (req: Request, res: Response) => {
   const logger = req.log;

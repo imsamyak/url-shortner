@@ -116,17 +116,12 @@ export const useUserStore = defineStore("user", {
     },
 
     async logout() {
-      if (!this.isLoggedIn) {
-        return {
-          success: false,
-          message: "You are not logged in",
-        };
-      }
       try {
         await $fetch("/api/auth/logout", {
           method: "POST",
         });
         this.profile = null;
+        this.isInitialized = true;
         return {
           success: true,
           message: "Logged out successfully",

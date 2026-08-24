@@ -95,6 +95,13 @@ export default class AuthService {
     }
   }
 
+  async logout(): Promise<void> {
+    const userId = this.context.userId;
+
+    // Refresh-token revocation will be handled here once Redis is introduced.
+    this.logger.info({ userId }, "User logged out successfully");
+  }
+
   async forgotPassword(params: { email: string }) {
     const { email } = params;
 
