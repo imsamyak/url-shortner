@@ -1,9 +1,8 @@
 packages:
-  - 'client'
-  - 'server'
-  - 'test/server'
-  - 'bin'
+  - "client"
+  - "packages/*"
+  - "services/**"
 allowBuilds:
-  '@scarf/scarf': true
+  "@scarf/scarf": true
   bcrypt: true
   esbuild: true

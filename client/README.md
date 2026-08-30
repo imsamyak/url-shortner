@@ -1,75 +1,32 @@
-# Nuxt Minimal Starter
+# Client
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Nuxt SSR application for creating, managing, and resolving shortened URLs. Its
+Nitro server is the public application layer and calls the private Express API.
 
-## Setup
+## Development
 
-Make sure to install dependencies:
-
-```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
+```sh
+pnpm install --frozen-lockfile
+pnpm --filter client dev
 ```
 
-## Development Server
+The client runs at `http://localhost:3000`. Override the default API endpoint
+with `NUXT_PUBLIC_API_URL` when Express is not running on localhost.
 
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
+`nuxt.config.ts` is the client's only environment boundary. Nuxt application
+and Nitro code consume its runtime config with the auto-imported
+`useRuntimeConfig()` helper, so no separate config imports are needed.
 
 ## Production
 
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
+```sh
+pnpm --filter client build
+pnpm --filter client preview
+docker build -f client/Dockerfile -t url-shortener-client .
 ```
 
-Locally preview production build:
+The Docker image contains only Nitro's standalone `.output` directory, runs as
+the non-root `node` user, and exposes a health check on port 3000.
 
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+In AWS, CloudFront fronts the public Nuxt load balancer. Nuxt instances run in
+private subnets and reach Express through its internal load balancer.

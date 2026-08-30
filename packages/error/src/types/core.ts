@@ -1,0 +1,8 @@
+export type ServiceErrorCode =
+    | "INTERNAL_ERROR"
+    | "RESOURCE_NOT_FOUND"
+    | "RESOURCE_ALREADY_EXISTS"
+    | "UNAUTHORIZED"
+    | "FORBIDDEN_ERROR"
+    | "VALIDATION_ERROR"
+    | "CONFIGURATION_ERROR";

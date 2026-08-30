@@ -1,0 +1,24 @@
+# CodeDeploy rolls an immutable Nuxt container across the EC2 Auto Scaling Group.
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /opt/url-shortener/client-deploy
+file_exists_behavior: OVERWRITE
+hooks:
+  ApplicationStop:
+    - location: deploy/stop.sh
+      timeout: 60
+      runas: root
+  AfterInstall:
+    - location: deploy/install.sh
+      timeout: 120
+      runas: root
+  ApplicationStart:
+    - location: deploy/start.sh
+      timeout: 60
+      runas: root
+  ValidateService:
+    - location: deploy/validate.sh
+      timeout: 60
+      runas: root

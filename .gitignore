@@ -1,3 +1,5 @@
 node_modules
 .env
 dist
+cdk.out
+bin/cdk.context.json

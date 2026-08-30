@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "./dist",
+    "resolveJsonModule": true,
+    "paths": {
+      "@src/*": ["./src/*"],
+      "@bin/*": ["./bin/*"],
+      "@tests/*": ["./tests/*"]
+    },
+    "types": ["@app/types", "node"]
+  },
+  "include": ["src/**/*", "bin/**/*", "tsup.config.ts"]
+}

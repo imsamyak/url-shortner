@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "pnpm --parallel -r dev",
-    "test:e2e": "pnpm --filter test test"
+    "build": "pnpm run build:packages && pnpm --filter server build && pnpm --filter client build",
+    "build:packages": "pnpm -r --filter @app/* --if-present build",
+    "build:server": "pnpm run build:packages && pnpm --filter server build",
+    "dev": "pnpm run build:packages && pnpm --parallel --filter client --filter server dev",
+    "test": "pnpm run build:packages && pnpm --filter server test",
+    "typecheck": "pnpm run build:packages && pnpm -r --if-present typecheck"
   },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@scarf/scarf"
-    ]
-  }
+  "packageManager": "pnpm@11.4.0"
 }

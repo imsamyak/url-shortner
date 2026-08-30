@@ -1,0 +1,11 @@
+.git
+.gitignore
+.env
+.env.*
+**/node_modules
+**/dist
+**/.nuxt
+**/.output
+**/cdk.out
+**/*.log
+test

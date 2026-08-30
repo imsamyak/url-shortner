@@ -1,95 +1,67 @@
 <template>
-  <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
-    <div class="glass-card w-full max-w-lg p-6 relative">
-      <button type="button" @click="$emit('close')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-
-      <h3 class="text-xl font-bold text-slate-900 mb-6">Create Short URL</h3>
-
-      <form @submit.prevent="createUrl" class="space-y-4">
-        <div v-if="createError" class="p-3 bg-red-50 text-red-600 rounded-lg text-sm border border-red-100">
-          {{ createError }}
+  <Teleport to="body">
+    <div v-if="show" class="fixed inset-0 z-[90] flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm" @click.self="emit('close')">
+      <div role="dialog" aria-modal="true" aria-labelledby="create-url-title" class="w-full max-w-lg overflow-hidden rounded-[2rem] border border-white/20 bg-white shadow-2xl shadow-slate-950/30">
+        <div class="flex items-start justify-between border-b border-slate-100 p-6 sm:p-7">
+          <div>
+            <div class="mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-50 text-brand-700">↗</div>
+            <h2 id="create-url-title" class="text-2xl font-black tracking-tight text-slate-950">Create a short link</h2>
+            <p class="mt-1 text-sm text-slate-500">Add a destination and choose how long it lives.</p>
+          </div>
+          <button type="button" class="icon-button" aria-label="Close dialog" @click="emit('close')">×</button>
         </div>
 
-        <div>
-          <label for="origin-url" class="block text-sm font-medium text-slate-700 mb-1">Original URL <span
-              class="text-red-500">*</span></label>
-          <input id="origin-url" v-model="form.origin" type="url" required class="input-field"
-            placeholder="https://example.com/very/long/path" />
-        </div>
-
-        <div>
-          <label for="expires-at" class="block text-sm font-medium text-slate-700 mb-1">Expiration Date
-            (Optional)</label>
-          <input id="expires-at" v-model="form.expiresAt" type="date" :min="minDate" class="input-field" />
-          <p class="text-xs text-slate-500 mt-1">Leave blank for no expiration. Sets to end of day (23:59).</p>
-        </div>
-
-        <div class="pt-4 flex justify-end gap-3">
-          <button type="button" @click="$emit('close')" class="btn-secondary">Cancel</button>
-          <button type="submit" :disabled="creating" class="btn-primary">
-            {{ creating ? 'Creating...' : 'Create URL' }}
-          </button>
-        </div>
-      </form>
+        <form class="space-y-5 p-6 sm:p-7" @submit.prevent="createUrl">
+          <div v-if="createError" role="alert" class="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-700">{{ createError }}</div>
+          <div>
+            <label for="origin-url" class="mb-2 block text-sm font-bold text-slate-700">Destination URL</label>
+            <input id="origin-url" v-model="form.origin" type="url" required class="input-field" placeholder="https://example.com/your/long/path" />
+            <p class="mt-2 text-xs leading-5 text-slate-400">Use the complete URL, including https://.</p>
+          </div>
+          <div>
+            <div class="mb-2 flex items-center justify-between"><label for="expires-at" class="text-sm font-bold text-slate-700">Expiration date</label><span class="text-xs font-semibold text-slate-400">Optional</span></div>
+            <input id="expires-at" v-model="form.expiresAt" type="date" :min="minDate" class="input-field" />
+            <p class="mt-2 text-xs leading-5 text-slate-400">The link expires at 23:59:59 in your local timezone, stored as UTC.</p>
+          </div>
+          <div class="flex flex-col-reverse gap-3 border-t border-slate-100 pt-5 sm:flex-row sm:justify-end">
+            <button type="button" class="btn-secondary" @click="emit('close')">Cancel</button>
+            <button type="submit" :disabled="creating" class="btn-primary">{{ creating ? "Creating…" : "Create short link" }}</button>
+          </div>
+        </form>
+      </div>
     </div>
-  </div>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed } from "vue";
 import { useRedirectStore } from "~/stores/redirect";
 
-defineProps<{
-  show: boolean
-}>()
-
-const emit = defineEmits<{
-  (e: 'close'): void
-  (e: 'created'): void
-}>()
-
-const redirectStore = useRedirectStore()
-const creating = ref(false)
-const createError = ref('')
-const form = reactive({
-  origin: '',
-  expiresAt: ''
-})
-
-// Returns YYYY-MM-DD for today so past dates cannot be clicked
+defineProps<{ show: boolean }>();
+const emit = defineEmits<{ (event: "close"): void; (event: "created"): void }>();
+const redirectStore = useRedirectStore();
+const creating = ref(false);
+const createError = ref("");
+const form = reactive({ origin: "", expiresAt: "" });
 const minDate = computed(() => {
   const today = new Date();
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, '0');
-  const day = String(today.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
+  return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
 });
 
 const createUrl = async () => {
-  creating.value = true
-  createError.value = ''
-
+  creating.value = true;
+  createError.value = "";
   try {
-    const payload: { origin: string; expiresAt?: string } = { origin: form.origin }
-    if (form.expiresAt) {
-      // Set to 23:59:59.999 (last second of the selected date)
-      payload.expiresAt = new Date(`${form.expiresAt}T23:59:59.999`).toISOString()
-    }
-
-    await redirectStore.create(payload)
-
-    form.origin = ''
-    form.expiresAt = ''
-    emit('created')
-    emit('close')
-  } catch (err: any) {
-    createError.value = err.data?.statusMessage || 'Failed to create URL'
+    const payload: { origin: string; expiresAt?: string } = { origin: form.origin };
+    if (form.expiresAt) payload.expiresAt = new Date(`${form.expiresAt}T23:59:59.999`).toISOString();
+    await redirectStore.create(payload);
+    form.origin = "";
+    form.expiresAt = "";
+    emit("created");
+    emit("close");
+  } catch (error: any) {
+    createError.value = error.data?.statusMessage || "Failed to create URL";
   } finally {
-    creating.value = false
+    creating.value = false;
   }
-}
+};
 </script>
