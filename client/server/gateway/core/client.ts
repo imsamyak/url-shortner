@@ -20,10 +20,12 @@ export default class ApiClient {
     prefix: string = "",
     protected readonly auth?: string,
   ) {
-    const baseUrl = useRuntimeConfig().public.apiUrl;
+    const rawBaseUrl = useRuntimeConfig().public.apiUrl || "";
+    const baseUrl = rawBaseUrl.replace(/\/+$/, "");
+    const cleanPrefix = prefix.startsWith("/") ? prefix : `/${prefix}`;
 
     this.client = axios.create({
-      baseURL: `${baseUrl}${prefix}`,
+      baseURL: `${baseUrl}${cleanPrefix}`,
     });
 
     this.client.interceptors.response.use(
