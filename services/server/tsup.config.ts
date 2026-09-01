@@ -9,5 +9,5 @@ export default defineConfig({
   clean: true,
   sourcemap: true,
   splitting: false,
-  external: [/^@app\//],
+  noExternal: [/^@app\//],
 });

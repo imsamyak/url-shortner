@@ -1,4 +1,4 @@
-import isEmail from "validator/lib/isEmail";
+import isEmail from "validator/lib/isEmail.js";
 import { ValidationError } from "@app/error";
 
 export function validateEmail(email: string) {
