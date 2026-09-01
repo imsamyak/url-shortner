@@ -1,4 +1,4 @@
-import LoadEnv from "@app/utils/LoadEnv";
+import LoadEnv from "@app/utils/loadEnv";
 import { z } from "zod";
 
 const secret = LoadEnv.of("JWT_SECRET", z.string().min(32)).get();

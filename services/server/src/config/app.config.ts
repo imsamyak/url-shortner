@@ -1,4 +1,4 @@
-import LoadEnv from "@app/utils/LoadEnv";
+import LoadEnv from "@app/utils/loadEnv";
 import { z } from "zod";
 
 const port = LoadEnv.of("PORT", z.coerce.number().default(4000)).get();

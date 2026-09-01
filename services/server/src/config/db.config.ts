@@ -1,4 +1,4 @@
-import LoadEnv from "@app/utils/LoadEnv";
+import LoadEnv from "@app/utils/loadEnv";
 import { z } from "zod";
 
 const endpoint = LoadEnv.of("DYNAMODB_ENDPOINT", z.string().optional()).get();
