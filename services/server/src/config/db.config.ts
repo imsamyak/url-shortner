@@ -5,7 +5,7 @@ const endpoint = LoadEnv.of("DYNAMODB_ENDPOINT", z.string().optional()).get();
 const region = LoadEnv.of("AWS_REGION", z.string().default("us-east-1")).get();
 const tableName = LoadEnv.of(
   "DYNAMODB_TABLE_NAME",
-  z.string().default("url_shortner_table"),
+  z.string().default("dev-urlshortner-data-table"),
 ).get();
 
 const dbConfig = {
