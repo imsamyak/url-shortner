@@ -7,19 +7,8 @@
   },
   "servers": [
     {
-      "url": "{protocol}://{host}:{port}/api/v1",
-      "description": "Dynamic API server",
-      "variables": {
-        "protocol": { "enum": ["http", "https"], "default": "http" },
-        "host": {
-          "default": "localhost",
-          "description": "The host domain or IP"
-        },
-        "port": {
-          "default": "4000",
-          "description": "The port number (leave empty for default HTTP/HTTPS ports)"
-        }
-      }
+      "url": "/api/v1",
+      "description": "API Server"
     }
   ],
   "components": {
@@ -35,6 +24,7 @@
   "paths": {
     "/auth/login": {
       "post": {
+        "tags": ["Auth"],
         "summary": "User Login",
         "security": [],
         "requestBody": {
@@ -69,6 +59,7 @@
     },
     "/auth/register": {
       "post": {
+        "tags": ["Auth"],
         "summary": "User Registration",
         "security": [],
         "requestBody": {
@@ -104,6 +95,7 @@
     },
     "/auth/forgot-password": {
       "post": {
+        "tags": ["Auth"],
         "summary": "Forgot Password",
         "security": [],
         "requestBody": {
@@ -127,6 +119,7 @@
     },
     "/auth/reset-password": {
       "post": {
+        "tags": ["Auth"],
         "summary": "Reset Password",
         "security": [],
         "requestBody": {
@@ -151,10 +144,12 @@
     },
     "/user/profile": {
       "get": {
+        "tags": ["User"],
         "summary": "Get User Profile",
         "responses": { "200": { "description": "Returns user profile" } }
       },
       "put": {
+        "tags": ["User"],
         "summary": "Update User Profile",
         "requestBody": {
           "required": true,
@@ -172,6 +167,7 @@
     },
     "/user/urls": {
       "get": {
+        "tags": ["User"],
         "summary": "Get User's URLs",
         "responses": {
           "200": { "description": "Returns list of user's shortened URLs" }
@@ -180,6 +176,7 @@
     },
     "/url/": {
       "post": {
+        "tags": ["URL"],
         "summary": "Create Short URL",
         "requestBody": {
           "required": true,
@@ -201,6 +198,7 @@
     },
     "/url/{shortId}": {
       "get": {
+        "tags": ["URL"],
         "summary": "Get Long URL",
         "security": [],
         "parameters": [
@@ -214,6 +212,7 @@
         "responses": { "200": { "description": "Returns the long URL" } }
       },
       "delete": {
+        "tags": ["URL"],
         "summary": "Delete Short URL",
         "parameters": [
           {
