@@ -33,16 +33,13 @@ export function withAuthContext(
         Object.defineProperty(request, "auth", {
             configurable: false,
             enumerable: false,
-            get(): () => AuthContext {
-                return () => {
-                    if (auth === undefined) {
-                        throw new UnauthorizedError({
-                            message: "Missing or invalid authentication",
-                        });
-                    }
-
-                    return auth
-                };
+            value: (): AuthContext => {
+                if (auth === undefined) {
+                    throw new UnauthorizedError({
+                        message: "Missing or invalid authentication",
+                    });
+                }
+                return auth;
             },
         });
 
