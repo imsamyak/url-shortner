@@ -8,10 +8,12 @@ declare global {
 
     interface AuthContext { }
 
+    type AuthProvider = () => AuthContext
+
     namespace Express {
         interface Request {
             /** Reading this throws when the request is not authenticated. */
-            readonly auth: AuthContext;
+            readonly auth: AuthProvider;
         }
     }
 }
@@ -31,14 +33,16 @@ export function withAuthContext(
         Object.defineProperty(request, "auth", {
             configurable: false,
             enumerable: false,
-            get(): AuthContext {
-                if (auth === undefined) {
-                    throw new UnauthorizedError({
-                        message: "Missing or invalid authentication",
-                    });
-                }
+            get(): () => AuthContext {
+                return () => {
+                    if (auth === undefined) {
+                        throw new UnauthorizedError({
+                            message: "Missing or invalid authentication",
+                        });
+                    }
 
-                return auth;
+                    return auth
+                };
             },
         });
 

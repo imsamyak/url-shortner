@@ -10,7 +10,7 @@ export const requireAuth = (
 ) => {
   try {
     // Attempt to access the userId to trigger the auth validation
-    const _ = req.auth.userId;
+    const _ = req.auth().userId;
   } catch (err) {
     // If the getter throws, they aren't authenticated
     throw new UnauthorizedError({ message: "Authentication is required to access this api" });

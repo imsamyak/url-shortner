@@ -11,7 +11,7 @@ import { jwt } from "../../infra/security/jwt";
 
 export class AuthService {
   constructor(
-    private readonly auth: AuthContext,
+    private readonly auth: AuthProvider,
     private readonly logger: Logger,
   ) { }
 
@@ -102,7 +102,7 @@ export class AuthService {
   }
 
   async logout(): Promise<void> {
-    const userId = this.auth.userId;
+    const userId = this.auth().userId;
 
     // Refresh-token revocation will be handled here once Redis is introduced.
     this.logger.info({ userId }, "User logged out successfully");

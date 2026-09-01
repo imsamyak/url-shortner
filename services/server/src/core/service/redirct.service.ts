@@ -8,7 +8,7 @@ import { Redirect } from "../../domain/entity/redirect.entity";
 
 export class RedirctService {
   constructor(
-    private readonly auth: AuthContext,
+    private readonly auth: AuthProvider,
     private readonly logger: Logger,
   ) { }
 
@@ -26,7 +26,7 @@ export class RedirctService {
     },
   ): Promise<Redirect> {
     const { origin, expiresAt } = params;
-    const userId = this.auth.userId;
+    const userId = this.auth().userId;
 
     try {
       const shortId = await this.generateShortId();
@@ -82,7 +82,7 @@ export class RedirctService {
   }
 
   async getRedirectsByAuthor(options?: { cursor?: string; limit?: number }) {
-    const userId = this.auth.userId;
+    const userId = this.auth().userId;
 
     try {
       const result = await redirectRepository.getByAuthor(userId, {
@@ -103,7 +103,7 @@ export class RedirctService {
 
   async deleteUrl(params: { shortId: string }) {
     const { shortId } = params;
-    const userId = this.auth.userId;
+    const userId = this.auth().userId;
 
     try {
       await redirectRepository.delete(shortId, userId);

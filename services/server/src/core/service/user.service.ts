@@ -4,14 +4,14 @@ import { User } from "../../domain/entity/user.entity";
 
 export class UserService {
   constructor(
-    private readonly auth: AuthContext,
+    private readonly auth: AuthProvider,
     private readonly logger: Logger,
   ) { }
 
   async updateProfile(params: Partial<Pick<User, "name">>) {
     const { name } = params;
     try {
-      await userRepository.update(this.auth.userId, { name });
+      await userRepository.update(this.auth().userId, { name });
     } catch (err) {
       this.logger.error({ err });
       throw err;
@@ -19,7 +19,7 @@ export class UserService {
   }
 
   async getProfile() {
-    const userId = this.auth.userId;
+    const userId = this.auth().userId;
 
     try {
       const user = await userRepository.getById(userId);
