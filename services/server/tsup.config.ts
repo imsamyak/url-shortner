@@ -10,5 +10,5 @@ export default defineConfig({
   sourcemap: true,
   splitting: false,
   noExternal: [/^@app\//],
-  external: ["jsonwebtoken", "jws", "safe-buffer", "validator", "bcrypt"],
+  external: ["jsonwebtoken", "jws", "safe-buffer", "validator", "bcrypt", "swagger-ui-express"],
 });
