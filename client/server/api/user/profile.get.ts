@@ -9,6 +9,7 @@ export default defineEventHandler(async (event) => {
     return { message: "Profile fetched successfully", data: res.data };
   } catch (error: any) {
     throw createError({
+      statusCode: error.status || 401,
       message: "Failed to fetch profile",
       cause: error,
     });
