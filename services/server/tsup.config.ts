@@ -10,4 +10,5 @@ export default defineConfig({
   sourcemap: true,
   splitting: false,
   noExternal: [/^@app\//],
+  external: ["jsonwebtoken", "jws", "safe-buffer", "validator", "bcrypt"],
 });
