@@ -1,0 +1,25 @@
+{
+  "name": "platform",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "infra:synth": "cdk synth",
+    "infra:diff": "cdk diff",
+    "infra:deploy": "cdk deploy --all"
+  },
+  "dependencies": {
+    "@app/infra-core": "workspace:*",
+    "aws-cdk-lib": "^2.150.0",
+    "constructs": "^10.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.0.0",
+    "aws-cdk": "^2.1139.0",
+    "aws-cdk-lib": "^2.266.0",
+    "constructs": "^10.8.1",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3"
+  }
+}

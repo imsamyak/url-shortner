@@ -113,7 +113,7 @@ Client infrastructure lives in `client/bin` and currently owns the shared VPC,
 Nuxt ECR repository, auto-scaled fleet, public load balancer, CDN, WAF, and
 application pipeline. Express imports the Nuxt-owned VPC and owns its ECR,
 DynamoDB, private fleet, internal load balancer, WAF, and application pipeline
-configuration in `services/server/bin`. `@app/constructs` provides the reusable,
+configuration in `services/server/bin`. `@app/infra-core` provides the reusable,
 parameterized stack implementations.
 
 Validate the server template with `pnpm --filter server infra:synth`. Deployment

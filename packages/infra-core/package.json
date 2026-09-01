@@ -1,0 +1,37 @@
+{
+  "name": "@app/infra-core",
+  "version": "0.1.0",
+  "description": "Shared CDK infrastructure utilities, defaults, and naming conventions.",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./utils.js": {
+      "types": "./src/utils/index.ts",
+      "import": "./src/utils/index.ts",
+      "default": "./src/utils/index.ts"
+    },
+    "./constructs.js": {
+      "types": "./src/constructs/index.ts",
+      "import": "./src/constructs/index.ts",
+      "default": "./src/constructs/index.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/utils/index.ts src/constructs/index.ts --format esm --clean && tsc --emitDeclarationOnly --declaration --declarationMap --outDir dist",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "aws-cdk-lib": "^2.150.0",
+    "constructs": "^10.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.0.0",
+    "aws-cdk-lib": "^2.266.0",
+    "constructs": "^10.8.1",
+    "tsup": "^8.5.1",
+    "typescript": "^6.0.3"
+  },
+  "license": "MIT"
+}

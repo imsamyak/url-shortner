@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# Give the Express container one minute to pass its local health check.
 set -euo pipefail
 
 for attempt in {1..12}; do

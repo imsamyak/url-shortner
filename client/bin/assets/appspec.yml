@@ -1,4 +1,3 @@
-# CodeDeploy rolls an immutable Nuxt container across the EC2 Auto Scaling Group.
 version: 0.0
 os: linux
 files:

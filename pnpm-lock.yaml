@@ -29,9 +29,9 @@ importers:
         specifier: ^5.2.0
         version: 5.2.0(@vue/compiler-sfc@3.5.41)(esbuild@0.28.2)(pinia@4.0.3(@vue/devtools-api@8.2.1)(typescript@7.0.2)(vue@3.5.41(typescript@7.0.2)))(rolldown@1.2.4)(rollup@4.62.4)(vite@8.2.1(@types/node@20.19.43)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.50.0)(tsx@4.23.12)(yaml@2.9.0))(vue@3.5.41(typescript@7.0.2))
     devDependencies:
-      '@app/constructs':
+      '@app/infra-core':
         specifier: workspace:*
-        version: link:../packages/constructs
+        version: link:../packages/infra-core
       '@nuxtjs/tailwindcss':
         specifier: ^6.14.0
         version: 6.14.0(magicast@0.5.4)(tsx@4.23.12)(yaml@2.9.0)
@@ -66,21 +66,6 @@ importers:
         specifier: ^3.3.10
         version: 3.3.10(typescript@7.0.2)
 
-  packages/constructs:
-    devDependencies:
-      aws-cdk-lib:
-        specifier: ^2.150.0
-        version: 2.266.0(constructs@10.8.1)
-      constructs:
-        specifier: ^10.3.0
-        version: 10.8.1
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@2.7.0)(postcss@8.5.26)(tsx@4.23.12)(typescript@7.0.2)(yaml@2.9.0)
-      typescript:
-        specifier: ^7.0.2
-        version: 7.0.2
-
   packages/error:
     devDependencies:
       tsup:
@@ -89,6 +74,24 @@ importers:
       typescript:
         specifier: ^7.0.2
         version: 7.0.2
+
+  packages/infra-core:
+    devDependencies:
+      '@types/node':
+        specifier: ^26.0.0
+        version: 26.2.0
+      aws-cdk-lib:
+        specifier: ^2.266.0
+        version: 2.266.0(constructs@10.8.1)
+      constructs:
+        specifier: ^10.8.1
+        version: 10.8.1
+      tsup:
+        specifier: ^8.5.1
+        version: 8.5.1(jiti@2.7.0)(postcss@8.5.26)(tsx@4.23.12)(typescript@6.0.3)(yaml@2.9.0)
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
 
   packages/types:
     devDependencies:
@@ -136,6 +139,31 @@ importers:
         specifier: ^7.0.2
         version: 7.0.2
 
+  platform:
+    dependencies:
+      '@app/infra-core':
+        specifier: workspace:*
+        version: link:../packages/infra-core
+      aws-cdk-lib:
+        specifier: ^2.150.0
+        version: 2.266.0(constructs@10.8.1)
+      constructs:
+        specifier: ^10.3.0
+        version: 10.8.1
+    devDependencies:
+      '@types/node':
+        specifier: ^26.0.0
+        version: 26.2.0
+      aws-cdk:
+        specifier: ^2.1139.0
+        version: 2.1139.0
+      tsx:
+        specifier: ^4.21.0
+        version: 4.23.12
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+
   services/server:
     dependencies:
       '@app/error':
@@ -175,9 +203,9 @@ importers:
         specifier: ^3.23.8
         version: 3.25.76
     devDependencies:
-      '@app/constructs':
+      '@app/infra-core':
         specifier: workspace:*
-        version: link:../../packages/constructs
+        version: link:../../packages/infra-core
       '@app/types':
         specifier: workspace:*
         version: link:../../packages/types
@@ -4587,6 +4615,11 @@ packages:
   type-is@2.1.0:
     resolution: {integrity: sha512-faYHw0anBbc/kWF3zFTEnxSFOAGUX9GFbOBthvDdLsIlEoWOFOtS0zgCiQYwIskL9iGXZL3kAXD8OoZ4GmMATA==}
     engines: {node: '>= 18'}
+
+  typescript@6.0.3:
+    resolution: {integrity: sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
 
   typescript@7.0.2:
     resolution: {integrity: sha512-8FYau96o3NKOhbjKi/qNvG/W5jhzxkbdm5sj9AbZ/5T5sWqn3hJgLfGx27sRKZWTvyzCP8dLRBTf5tBTSRVUNA==}
@@ -9874,6 +9907,34 @@ snapshots:
 
   tsscmp@1.0.6: {}
 
+  tsup@8.5.1(jiti@2.7.0)(postcss@8.5.26)(tsx@4.23.12)(typescript@6.0.3)(yaml@2.9.0):
+    dependencies:
+      bundle-require: 5.1.0(esbuild@0.27.7)
+      cac: 6.7.14
+      chokidar: 4.0.3
+      consola: 3.4.2
+      debug: 4.4.3(supports-color@5.5.0)
+      esbuild: 0.27.7
+      fix-dts-default-cjs-exports: 1.0.1
+      joycon: 3.1.1
+      picocolors: 1.1.1
+      postcss-load-config: 6.0.1(jiti@2.7.0)(postcss@8.5.26)(tsx@4.23.12)(yaml@2.9.0)
+      resolve-from: 5.0.0
+      rollup: 4.62.4
+      source-map: 0.7.6
+      sucrase: 3.35.1
+      tinyexec: 0.3.2
+      tinyglobby: 0.2.17
+      tree-kill: 1.2.2
+    optionalDependencies:
+      postcss: 8.5.26
+      typescript: 6.0.3
+    transitivePeerDependencies:
+      - jiti
+      - supports-color
+      - tsx
+      - yaml
+
   tsup@8.5.1(jiti@2.7.0)(postcss@8.5.26)(tsx@4.23.12)(typescript@7.0.2)(yaml@2.9.0):
     dependencies:
       bundle-require: 5.1.0(esbuild@0.27.7)
@@ -9922,6 +9983,8 @@ snapshots:
       content-type: 2.1.0
       media-typer: 1.1.1
       mime-types: 3.0.2
+
+  typescript@6.0.3: {}
 
   typescript@7.0.2:
     optionalDependencies:

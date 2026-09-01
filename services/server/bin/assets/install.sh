@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# Pull the exact image and materialize its runtime secrets for Docker.
 set -euo pipefail
 
 DEPLOY_DIR=/opt/url-shortener/server-deploy

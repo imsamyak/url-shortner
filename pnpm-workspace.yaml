@@ -1,5 +1,6 @@
 packages:
   - "client"
+  - "platform"
   - "packages/*"
   - "services/**"
 allowBuilds:

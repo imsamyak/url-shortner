@@ -1,180 +1,72 @@
 #!/usr/bin/env node
-import {
-  buildComputeStack,
-  buildDataStack,
-  buildFirewallStack,
-  buildPipelineStack,
-  buildRepositoryStack,
-  type StackContext,
-} from "@app/constructs";
-import { App, Tags, type StackProps } from "aws-cdk-lib";
-import { Port } from "aws-cdk-lib/aws-ec2";
-import { ManagedPolicy } from "aws-cdk-lib/aws-iam";
-import { Secret } from "aws-cdk-lib/aws-secretsmanager";
+import { App } from "aws-cdk-lib";
+import { StackContext } from "@app/infra-core/utils.js";
 
-import { createComputeConfig } from "./config/compute.config.js";
-import { dataConfig } from "./config/data.config.js";
-import { serverDeploymentConfig } from "./config/deployment.config.js";
-import { createFirewallConfig } from "./config/firewall.config.js";
-import { createPipelineConfig } from "./config/pipeline.config.js";
-import { repositoryConfig } from "./config/repository.config.js";
-import { clientVpcConfig } from "./config/vpc.config.js";
-
-/** Stable service identity used by every server-owned infrastructure stack. */
-const context: StackContext = {
-  realm: "global",
-  name: "url-shortener-server",
-  env: process.env.DEPLOY_ENV ?? "dev",
-};
-
-/** AWS account and region remain ordinary CDK stack props. */
-const defaultProps: StackProps = {
-  awsEnv: {
-    region: process.env.CDK_DEFAULT_REGION ?? "us-east-1",
-    account: process.env.CDK_DEFAULT_ACCOUNT ?? "123456789012",
-  },
-};
+import { ComputeStack } from "./stack/compute.stack.js";
+import { FirewallStack } from "./stack/firewall.stack.js";
+import { PipelineStack } from "./stack/pipeline.stack.js";
+import { RepositoryStack } from "./stack/repository.stack.js";
 
 const app = new App();
 
-/**
- * Foundational Infrastructure Stacks
- *
- * Provisions the core shared resources required by the application,
- * including ECR repositories and DynamoDB tables.
- */
-
-// Repository Stack: Provisions ECR repositories for Docker images
-const repositoryStack = buildRepositoryStack(
-  app,
-  context,
-  repositoryConfig,
-  {
-    ...defaultProps,
-    description: "Server Docker image repositories",
-  },
-);
-const serverRepository = repositoryStack.repositories.server!;
-
-// Data Stack: Provisions DynamoDB tables and other data-layer resources
-const dataStack = buildDataStack(app, context, dataConfig, {
-  ...defaultProps,
-  description: "Server-owned DynamoDB resources",
-});
-
+// Determine the environment (e.g., 'dev', 'prod') and construct a base context.
+const env = process.env.APP_ENV ?? "dev";
+const base = StackContext.builder(env, "urlshortner", "server");
 
 /**
- * Application Compute Stack
- *
- * Provisions the auto-scaling group and internal load balancer
- * for the private Express container fleet.
+ * Repository Stack
+ * 
+ * Provisions the ECR (Elastic Container Registry) repositories for this service.
+ * It is built first because the compute instances and deployment pipelines 
+ * need a place to pull and push Docker images from.
  */
-
-// Compute Stack: Provisions the auto-scaling group and internal load balancer for the Express service
-const computeStack = buildComputeStack(
-  app,
-  context,
-  createComputeConfig(clientVpcConfig, serverRepository),
-  {
-    ...defaultProps,
-    description: "Private, auto-scaled Express container fleet",
-  },
-);
-const serverService = computeStack.services.server!;
-
+const repositoryStack = RepositoryStack.build(app, base.stack("repository"));
 
 /**
- * Compute Networking & Scaling Config
- *
- * Configures the internal networking rules for the Express load balancer
- * and defines the CPU-based scaling policies and deployment tags for the ASG.
+ * Compute Stack
+ * 
+ * Provisions the Auto Scaling Group (EC2 instances) and the internal 
+ * Application Load Balancer. It imports the VPC and DynamoDB table from the
+ * platform core stacks using cross-stack CloudFormation imports.
  */
-
-// Keep Express private. The client stack must grant its Nuxt security group access
-// to the listener without exposing this load balancer to the rest of the VPC.
-serverService.loadBalancer!.connections.allowTo(
-  serverService.autoScalingGroup,
-  Port.tcp(serverDeploymentConfig.port),
-  "Forward internal load-balancer traffic to Express",
-);
-
-// Scale out when CPU utilization hits the target threshold
-serverService.autoScalingGroup.scaleOnCpuUtilization("cpu-scaling", {
-  targetUtilizationPercent: 60,
-});
-
-// Tag the ASG so that CodeDeploy knows which instances to target
-Tags.of(serverService.autoScalingGroup).add(
-  serverDeploymentConfig.deploymentTagKey,
-  serverDeploymentConfig.deploymentTagValue,
-  { applyToLaunchedInstances: true },
-);
-
+const computeStack = ComputeStack.build(app, base.stack("compute"));
 
 /**
- * IAM Permissions & Secrets
- *
- * Grants the Express compute instances the necessary permissions to access
- * DynamoDB, Systems Manager, and runtime secrets.
+ * Firewall Stack
+ * 
+ * Provisions AWS WAF (Web Application Firewall) rules and rate-limiting.
+ * It attaches directly to the Application Load Balancer created in the Compute Stack
+ * to protect the express instances from malicious traffic.
  */
-
-// Grant the compute instances permission to read and write to the DynamoDB table
-dataStack.tables["url-shortener"]!.grantReadWriteData(
-  serverService.autoScalingGroup.role,
-);
-
-// Allow the instances to be managed by Systems Manager (SSM)
-serverService.autoScalingGroup.role.addManagedPolicy(
-  ManagedPolicy.fromAwsManagedPolicyName("AmazonSSMManagedInstanceCore"),
-);
-
-// Grant the compute instances permission to read the runtime secrets
-const runtimeSecret = Secret.fromSecretNameV2(
-  computeStack,
-  "server-runtime-secret",
-  serverDeploymentConfig.runtimeSecretName,
-);
-runtimeSecret.grantRead(serverService.autoScalingGroup.role);
-
+const firewallStack = FirewallStack.build(app, base.stack("firewall"));
 
 /**
- * Security & Deployment Pipeline
- *
- * Provisions AWS WAF for load balancer protection and the CodePipeline
- * infrastructure for continuous delivery of the Express service.
+ * Pipeline Stack
+ * 
+ * Provisions the AWS CodePipeline and CodeDeploy configurations.
+ * This sets up the CI/CD pipeline that pulls from GitHub, builds the Docker image,
+ * pushes it to the ECR repository, and triggers a deployment on the EC2 instances.
  */
-
-// Firewall Stack: Provisions AWS WAF rules to protect the load balancer
-buildFirewallStack(
-  app,
-  context,
-  createFirewallConfig(serverService.loadBalancer!.loadBalancerArn),
-  {
-    ...defaultProps,
-    description: "AWS WAF protection and rate limiting for Express",
-  },
-);
-
-// Pipeline Stack: Provisions the CodePipeline for delivering the Express service
-const pipelineStack = buildPipelineStack(
-  app,
-  context,
-  createPipelineConfig(serverRepository),
-  {
-    ...defaultProps,
-    description: "Docker delivery pipeline for the Express service",
-  },
-);
-
-// Grant CodeDeploy agents on the EC2 instances permission to download pipeline revisions
-pipelineStack.pipeline.artifactBucket.grantRead(
-  serverService.autoScalingGroup.role,
-);
-
+const pipelineStack = PipelineStack.build(app, base.stack("pipeline"));
 
 /**
- * Synthesize the App
- *
- * Compiles the CDK application into CloudFormation templates.
+ * Stack Dependencies
+ * 
+ * Because the stacks share resources via CloudFormation `Fn.importValue` instead of 
+ * direct object references, the CDK cannot automatically infer their deployment order.
+ * We explicitly declare the dependencies here to ensure they deploy sequentially 
+ * and avoid CloudFormation "resource not found" errors during `cdk deploy --all`.
  */
+
+// Compute needs the ECR repository to exist so EC2 instances can pull the image
+computeStack.addStackDependency(repositoryStack);
+
+// Firewall needs the Application Load Balancer to exist before it can attach to it
+firewallStack.addStackDependency(computeStack);
+
+// Pipeline needs the ECR repository (to push images) and Compute (to trigger CodeDeploy)
+pipelineStack.addStackDependency(repositoryStack);
+pipelineStack.addStackDependency(computeStack);
+
+// Synthesize the AWS CloudFormation templates
 app.synth();

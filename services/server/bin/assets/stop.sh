@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# A missing container is valid during the first deployment.
 set -euo pipefail
 
 if docker container inspect url-shortener-server >/dev/null 2>&1; then

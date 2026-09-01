@@ -14,13 +14,13 @@
     "test:unit:watch": "vitest --config test/vitest.config.ts",
     "test:e2e": "playwright test --config test/playwright.config.ts",
     "test:e2e:ui": "playwright test --config test/playwright.config.ts --ui",
-    "infra:synth": "pnpm --filter @app/constructs build && cdk synth",
-    "infra:diff": "pnpm --filter @app/constructs build && cdk diff",
-    "infra:deploy": "pnpm --filter @app/constructs build && cdk deploy --all"
+    "infra:synth": "cdk synth",
+    "infra:diff": "cdk diff",
+    "infra:deploy": "cdk deploy --all"
   },
   "devDependencies": {
+    "@app/infra-core": "workspace:*",
     "@app/types": "workspace:*",
-    "@app/constructs": "workspace:*",
     "@types/bcrypt": "^6.0.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",

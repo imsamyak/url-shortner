@@ -7,6 +7,7 @@
     "build:packages": "pnpm -r --filter @app/* --if-present build",
     "build:server": "pnpm run build:packages && pnpm --filter server build",
     "dev": "pnpm run build:packages && pnpm --parallel --filter client --filter server dev",
+    "infra:platform:synth": "pnpm --filter platform infra:synth",
     "test": "pnpm run build:packages && pnpm --filter server test",
     "typecheck": "pnpm run build:packages && pnpm -r --if-present typecheck"
   },

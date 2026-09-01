@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: url-shortener-api
+    env: docker
+    dockerfilePath: ./services/server/Dockerfile
+    envVars:
+      - key: PORT
+        value: "4000"
+      - key: AWS_REGION
+        value: "us-west-2"
+      - key: AWS_ACCESS_KEY_ID
+        sync: false
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false
+
+  - type: web
+    name: url-shortener-client
+    env: docker
+    dockerfilePath: ./client/Dockerfile
+    envVars:
+      - key: PORT
+        value: "3000"
+      - key: NUXT_PUBLIC_API_URL
+        fromService:
+          type: web
+          name: url-shortener-api
+          envVarKey: RENDER_EXTERNAL_URL
