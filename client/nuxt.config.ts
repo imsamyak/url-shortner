@@ -6,6 +6,32 @@ const isProduction = process.env.NODE_ENV === "production";
 export default defineNuxtConfig({
   srcDir: ".",
   compatibilityDate: "2024-11-01",
+  app: {
+    head: {
+      htmlAttrs: { lang: "en" },
+      link: [
+        { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+      ],
+      meta: [
+        { name: "theme-color", content: "#f8fafc" },
+      ],
+      script: [
+        {
+          innerHTML: `(function () {
+            try {
+              var savedTheme = localStorage.getItem("linkora-theme");
+              var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+              var isDark = savedTheme ? savedTheme === "dark" : prefersDark;
+              document.documentElement.classList.toggle("dark", isDark);
+              document.documentElement.style.colorScheme = isDark ? "dark" : "light";
+              document.querySelector('meta[name="theme-color"]')?.setAttribute("content", isDark ? "#1e293b" : "#f8fafc");
+            } catch (_) {}
+          })();`,
+          tagPosition: "head",
+        },
+      ],
+    },
+  },
   // Keep the inspector out of production and preview builds.
   devtools: { enabled: !isProduction },
   modules: ["@nuxtjs/tailwindcss", "@pinia/nuxt"],

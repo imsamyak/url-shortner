@@ -8,9 +8,9 @@
       <div v-for="toast in toasts" :key="toast.id"
         class="pointer-events-auto rounded-lg shadow-lg px-4 py-3 flex items-center justify-between min-w-[300px] border"
         :class="{
-          'bg-white text-slate-800 border-slate-200': toast.type === 'info',
-          'bg-green-50 text-green-800 border-green-200': toast.type === 'success',
-          'bg-red-50 text-red-800 border-red-200': toast.type === 'error'
+          'bg-white text-slate-800 border-slate-200 dark:bg-slate-900 dark:text-slate-200 dark:border-slate-700': toast.type === 'info',
+          'bg-green-50 text-green-800 border-green-200 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-800': toast.type === 'success',
+          'bg-red-50 text-red-800 border-red-200 dark:bg-red-950 dark:text-red-200 dark:border-red-800': toast.type === 'error'
         }">
         <div class="flex items-center gap-3">
           <!-- Icon -->
@@ -38,7 +38,7 @@
 
         <!-- Close Button -->
         <button type="button" @click="removeToast(toast.id)"
-          class="text-slate-400 hover:text-slate-600 transition-colors ml-4">
+          class="ml-4 text-slate-400 transition-colors hover:text-slate-600 dark:hover:text-slate-200">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd"
               d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"

@@ -1,12 +1,12 @@
 <template>
-  <article class="group rounded-2xl border border-slate-200/80 bg-white p-4 transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-lg hover:shadow-slate-900/5 sm:p-5">
+  <article class="group rounded-2xl border border-slate-200/80 bg-white p-4 transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-lg hover:shadow-slate-900/5 dark:border-slate-700 dark:bg-slate-900 dark:hover:border-brand-500/40 sm:p-5">
     <div class="flex items-start gap-4">
       <div class="hidden h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-slate-100 text-slate-600 transition group-hover:bg-brand-50 group-hover:text-brand-700 sm:flex">↗</div>
       <div class="min-w-0 flex-1">
         <div class="flex items-start justify-between gap-3">
           <div class="min-w-0">
             <a :href="redirect.url" target="_blank" rel="noopener noreferrer" class="block truncate text-base font-black text-slate-950 hover:text-brand-700">{{ redirect.url }}</a>
-            <a :href="redirect.origin" target="_blank" rel="noopener noreferrer" class="mt-1 block truncate text-sm text-slate-500 hover:text-slate-800" :title="redirect.origin">{{ redirect.origin }}</a>
+            <a :href="redirect.origin" target="_blank" rel="noopener noreferrer" class="mt-1 block truncate text-sm text-slate-500 hover:text-slate-800 dark:hover:text-slate-200" :title="redirect.origin">{{ redirect.origin }}</a>
           </div>
           <div class="flex shrink-0 items-center gap-2">
             <button type="button" class="icon-button !h-9 !w-9" title="Copy short URL" aria-label="Copy short URL" @click="copy">

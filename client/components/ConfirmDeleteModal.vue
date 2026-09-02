@@ -1,7 +1,7 @@
 <template>
   <Teleport to="body">
   <div v-if="show" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm transition-opacity">
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden transform transition-all">
+    <div class="w-full max-w-sm transform overflow-hidden rounded-2xl border border-transparent bg-white shadow-xl transition-all dark:border-slate-700 dark:bg-slate-900">
       <div class="p-6">
         <div class="flex items-center justify-center w-12 h-12 mx-auto bg-red-100 rounded-full mb-4">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">

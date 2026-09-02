@@ -1,7 +1,7 @@
 <template>
   <Teleport to="body">
     <div v-if="show" class="fixed inset-0 z-[90] flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm" @click.self="emit('close')">
-      <div role="dialog" aria-modal="true" aria-labelledby="create-url-title" class="w-full max-w-lg overflow-hidden rounded-[2rem] border border-white/20 bg-white shadow-2xl shadow-slate-950/30">
+      <div role="dialog" aria-modal="true" aria-labelledby="create-url-title" class="w-full max-w-lg overflow-hidden rounded-[2rem] border border-white/20 bg-white shadow-2xl shadow-slate-950/30 dark:border-slate-700 dark:bg-slate-900">
         <div class="flex items-start justify-between border-b border-slate-100 p-6 sm:p-7">
           <div>
             <div class="mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-50 text-brand-700">↗</div>

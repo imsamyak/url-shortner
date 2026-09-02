@@ -1,14 +1,14 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-blue-50">
+  <div class="flex min-h-screen items-center justify-center bg-blue-50 dark:bg-slate-800">
     <div class="text-center" v-if="error">
-      <h1 class="text-4xl font-bold text-gray-800 mb-4">404</h1>
-      <p class="text-lg text-gray-600 mb-6">The link you are looking for does not exist or has expired.</p>
-      <NuxtLink to="/" class="px-6 py-3 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition">
+      <h1 class="mb-4 text-4xl font-bold text-gray-800 dark:text-white">404</h1>
+      <p class="mb-6 text-lg text-gray-600 dark:text-slate-300">The link you are looking for does not exist or has expired.</p>
+      <NuxtLink to="/" class="rounded-lg bg-blue-600 px-6 py-3 text-white shadow transition hover:bg-blue-700">
         Go Home
       </NuxtLink>
     </div>
     <div v-else>
-      <p class="text-lg text-gray-600 animate-pulse">Redirecting...</p>
+      <p class="animate-pulse text-lg text-gray-600 dark:text-slate-300">Redirecting...</p>
     </div>
   </div>
 </template>

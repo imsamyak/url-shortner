@@ -31,7 +31,7 @@
           <div class="p-5 sm:p-8">
             <!-- DynamoDB uses an entity/access-pattern diagram because the application uses one physical table. -->
             <template v-if="activeDetail.id === 'dynamodb'">
-              <div class="rounded-[1.75rem] border border-amber-200 bg-gradient-to-br from-amber-50 to-white p-5 sm:p-7">
+              <div class="rounded-[1.75rem] border border-amber-200 bg-gradient-to-br from-amber-50 to-white p-5 dark:from-amber-950/30 dark:to-slate-900 sm:p-7">
                 <div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
                   <div>
                     <p class="text-xs font-bold uppercase tracking-[0.15em] text-amber-700">Single-table entity map</p>
@@ -135,7 +135,7 @@ const details: Record<DetailId, ArchitectureDetail> = {
       { title: "Edge response", text: "Cacheable assets stay close to users; dynamic responses return immediately." },
     ],
     facts: [
-      { label: "Public protocol", value: "HTTPS :443", text: "The only globally exposed application entry point." },
+      { label: "Viewer protocol", value: "HTTPS :443", text: "The intended global entry point for application traffic." },
       { label: "Origin", value: "Nuxt public ALB", text: "The Express service is never configured as an edge origin." },
       { label: "Release hook", value: "CDN invalidation", text: "The client pipeline refreshes stale assets after deployment." },
     ],
@@ -165,7 +165,7 @@ const details: Record<DetailId, ArchitectureDetail> = {
       { title: "Private gateway", text: "Nitro calls the internal Express load balancer from inside the shared VPC." },
     ],
     facts: [
-      { label: "Fleet size", value: "2–8 instances", text: "CPU target tracking scales horizontally while keeping two nodes online." },
+      { label: "Fleet size", value: "2–10 instances", text: "CPU target tracking scales horizontally while keeping two nodes online." },
       { label: "Network", value: "Private subnets", text: "Instances have no public IP; only the load balancer is public." },
       { label: "Deployment", value: "ECR → CodeDeploy", text: "Each immutable Nuxt image rolls across half the fleet at a time." },
     ],
@@ -182,7 +182,7 @@ const details: Record<DetailId, ArchitectureDetail> = {
     facts: [
       { label: "Fleet size", value: "2–6 instances", text: "The service scales separately from the public rendering tier." },
       { label: "Application port", value: "REST :4000", text: "The security group allows ingress from the Nuxt tier only." },
-      { label: "Rate limit", value: "2,000 / 5 min", text: "A WAF IP rule protects the internal load-balancer request path." },
+      { label: "Rate limit", value: "1,000 / 5 min", text: "A WAF IP rule protects the internal load-balancer request path." },
       { label: "Deployment", value: "ECR → CodeDeploy", text: "Each immutable Docker image rolls across half the fleet at a time." },
     ],
   },

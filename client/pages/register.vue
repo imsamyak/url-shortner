@@ -1,7 +1,7 @@
 <template>
   <div class="page-shell flex flex-1 items-center justify-center py-12 sm:py-20">
     <div class="grid w-full max-w-4xl overflow-hidden rounded-[2rem] border border-white/80 bg-white shadow-2xl shadow-slate-900/10 lg:grid-cols-[.9fr_1.1fr]">
-      <aside class="hidden bg-gradient-to-br from-brand-700 to-slate-950 p-10 text-white lg:flex lg:flex-col lg:justify-between">
+      <aside class="hidden bg-gradient-to-br from-brand-700 to-slate-950 p-10 text-white dark:from-slate-950 dark:to-slate-950 lg:flex lg:flex-col lg:justify-between">
         <div class="eyebrow !border-white/10 !bg-white/10 !text-cyan-200">Start free</div>
         <div>
           <h2 class="text-4xl font-black leading-tight tracking-tight">Make every link easier to share.</h2>
