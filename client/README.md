@@ -13,6 +13,12 @@ pnpm --filter client dev
 The client runs at `http://localhost:3000`. Override the default API endpoint
 with `NUXT_PUBLIC_API_URL` when Express is not running on localhost.
 
+Set `NUXT_HEALTH_CHECK_URL` to a backend health endpoint when the API host can
+sleep while idle. During SSR, Nuxt calls this private URL before rendering,
+deduplicates concurrent wake-ups, and waits five minutes after a successful
+check before calling it again. Health-check failures are logged without failing
+the page render.
+
 `nuxt.config.ts` is the client's only environment boundary. Nuxt application
 and Nitro code consume its runtime config with the auto-imported
 `useRuntimeConfig()` helper, so no separate config imports are needed.

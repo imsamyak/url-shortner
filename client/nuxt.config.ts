@@ -1,6 +1,7 @@
 // Nuxt owns all client-service environment access. Application code consumes the
 // typed runtime config through Nuxt's auto-imported `useRuntimeConfig` helper.
 const apiUrl = process.env.NUXT_PUBLIC_API_URL ?? "http://localhost:4000/api/v1";
+const healthCheckUrl = process.env.NUXT_HEALTH_CHECK_URL ?? "";
 const isProduction = process.env.NODE_ENV === "production";
 
 export default defineNuxtConfig({
@@ -37,6 +38,8 @@ export default defineNuxtConfig({
   modules: ["@nuxtjs/tailwindcss", "@pinia/nuxt"],
   css: ["~/assets/css/main.css"],
   runtimeConfig: {
+    // Private server-only URL used to wake a sleeping API before SSR completes.
+    healthCheckUrl,
     pagination: {
       urlChunkSize: 20,
     },
