@@ -31,14 +31,14 @@ export const injectAuthMiddleware = withAuthContext((req: Request) => {
     : null;
 
   if (authHeader) {
-    const claim = jwt.decode({
+    const decoded = jwt.decode({
       token: authHeader,
       verify: {
         intent: "access"
       }
     });
 
-    return { userId: claim.userId };
+    return { userId: decoded.claim.userId };
   }
 
   return undefined;

@@ -22,7 +22,7 @@ export interface ComputeStackProps extends StackProps {
 }
 
 /** 
- * Owns the private, auto-scaled Express container fleet and internal ALB. 
+ * Owns the private, auto-scaled Express container fleet and internal ALB.
  * This stack is responsible for the actual runtime of the application server.
  */
 export class ComputeStack extends Stack {
@@ -96,7 +96,7 @@ export class ComputeStack extends Stack {
       instanceTags: config.instanceTags,
     });
 
-    // Create the internal Application Load Balancer to route traffic to the ASG.
+    // Create the internal Application Load Balancer used only by the Nuxt fleet.
     buildApplicationLoadBalancer(this, "server", {
       namespace,
       vpc,

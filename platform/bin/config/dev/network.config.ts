@@ -1,4 +1,8 @@
-import { IpAddresses, SubnetType } from "aws-cdk-lib/aws-ec2";
+import {
+  GatewayVpcEndpointAwsService,
+  IpAddresses,
+  SubnetType,
+} from "aws-cdk-lib/aws-ec2";
 import NetworkConfig from "../../types/network-config.js";
 
 /** Builds the shared network configuration from its resolved stack namespace. */
@@ -9,6 +13,11 @@ export function getNetworkConfig(namespace: string): NetworkConfig {
       ipAddresses: IpAddresses.cidr("10.20.0.0/16"),
       maxAzs: 2,
       natGateways: 1,
+      gatewayEndpoints: {
+        dynamodb: {
+          service: GatewayVpcEndpointAwsService.DYNAMODB,
+        },
+      },
       subnetConfiguration: [
         {
           name: "public",

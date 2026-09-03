@@ -84,7 +84,7 @@
         <div class="mt-7 rounded-[1.75rem] border-2 border-dashed border-brand-200 bg-brand-50/30 p-4 sm:p-6">
           <div class="rounded-2xl border border-cyan-200 bg-cyan-50 p-4 text-center"><p class="text-xs font-bold uppercase tracking-[0.14em] text-cyan-700">Public subnets · internet-facing Nuxt ALB · one NAT gateway</p></div><div class="my-3 flex justify-center text-slate-300">↓</div>
           <div class="grid gap-4 md:grid-cols-2"><div v-for="zone in availabilityZones" :key="zone.name" class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"><div class="flex items-center justify-between"><p class="text-sm font-black text-slate-900">{{ zone.name }}</p><span class="text-[10px] font-bold uppercase tracking-[0.12em] text-emerald-600">Multi-AZ</span></div><p class="mt-1 text-[11px] text-slate-400">Public /24 + private-with-egress /24</p><div class="mt-4 space-y-3"><div class="flex items-center gap-3 rounded-xl bg-brand-50 p-3"><span class="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-100 font-black text-brand-700">N</span><div><p class="text-xs font-black text-slate-900">Nuxt EC2 target</p><p class="text-[11px] text-slate-500">Private subnet · no public IP</p></div></div><div class="flex items-center gap-3 rounded-xl bg-violet-50 p-3"><span class="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-100 font-black text-violet-700">E</span><div><p class="text-xs font-black text-slate-900">Express EC2 target</p><p class="text-[11px] text-slate-500">Private subnet · no public IP</p></div></div></div></div></div>
-          <div class="my-3 flex justify-center text-slate-300">↓</div><div class="rounded-2xl border border-violet-200 bg-violet-50 p-4 text-center"><p class="text-xs font-bold uppercase tracking-[0.14em] text-violet-700">Internal Express ALB · reachable from the Nuxt fleet on port 80</p></div>
+          <div class="my-3 flex justify-center text-slate-300">↓</div><div class="grid gap-3 md:grid-cols-2"><div class="rounded-2xl border border-violet-200 bg-violet-50 p-4 text-center"><p class="text-xs font-bold uppercase tracking-[0.14em] text-violet-700">Internal Express ALB · Nuxt-only private route</p></div><div class="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-center"><p class="text-xs font-bold uppercase tracking-[0.14em] text-amber-700">DynamoDB gateway endpoint · route-table access</p></div></div>
         </div>
       </div>
 
@@ -126,26 +126,25 @@
 
 <script setup lang="ts">
 import ArchitectureDetailModal from "~/components/ArchitectureDetailModal.vue";
-
-type DetailId = "cloudfront" | "alb" | "nuxt" | "express" | "dynamodb";
+import type { ArchitectureDetailId } from "~/types";
 
 const selectedNode = ref(0);
-const activeDetail = ref<DetailId | null>(null);
+const activeDetail = ref<ArchitectureDetailId | null>(null);
 const sectionLinks = [{ id: "overview", number: "01", label: "Overview" }, { id: "hld", number: "02", label: "HLD" }, { id: "lld", number: "03", label: "LLD" }, { id: "aws-stacks", number: "04", label: "AWS stacks" }];
 const metrics = [{ value: "2", label: "Availability zones" }, { value: "16", label: "Max app instances" }, { value: "12", label: "CDK stacks" }];
 
 const requestPath = [
-  { id: "cloudfront" as DetailId, layer: "Edge", title: "CloudFront", icon: "C", color: "bg-cyan-50 text-cyan-700", caption: "Global HTTPS entry and static asset cache", detail: "Redirects viewers to HTTPS, forwards dynamic routes, and caches optimized /_nuxt assets close to users.", protocol: "HTTPS :443" },
-  { id: "alb" as DetailId, layer: "Web", title: "Public ALB", icon: "L", color: "bg-blue-50 text-blue-700", caption: "Multi-AZ, health-aware traffic routing", detail: "Balances requests across healthy Nuxt targets in both availability zones.", protocol: "HTTP :80" },
-  { id: "nuxt" as DetailId, layer: "SSR", title: "Nuxt fleet", icon: "N", color: "bg-brand-50 text-brand-700", caption: "2–10 private EC2 instances", detail: "Renders the public application and acts as the server-side facade for calls to the private API.", protocol: "Nitro :3000" },
-  { id: "express" as DetailId, layer: "API", title: "Express core", icon: "E", color: "bg-violet-50 text-violet-700", caption: "2–6 private EC2 instances", detail: "Runs authentication, user, and redirect use cases behind a VPC-only load balancer.", protocol: "REST :4000" },
-  { id: "dynamodb" as DetailId, layer: "Data", title: "DynamoDB", icon: "D", color: "bg-amber-50 text-amber-700", caption: "On-demand single table with GSI and TTL", detail: "Stores users and redirects with point-in-time recovery, deletion protection, and asynchronous TTL expiry.", protocol: "AWS SDK" },
+  { id: "cloudfront" as ArchitectureDetailId, layer: "Edge", title: "CloudFront", icon: "C", color: "bg-cyan-50 text-cyan-700", caption: "Global HTTPS entry and static asset cache", detail: "Redirects viewers to HTTPS, forwards dynamic routes, and caches optimized /_nuxt assets close to users.", protocol: "HTTPS :443" },
+  { id: "alb" as ArchitectureDetailId, layer: "Web", title: "Public ALB", icon: "L", color: "bg-blue-50 text-blue-700", caption: "Multi-AZ, health-aware traffic routing", detail: "Balances requests across healthy Nuxt targets in both availability zones.", protocol: "HTTP :80" },
+  { id: "nuxt" as ArchitectureDetailId, layer: "SSR", title: "Nuxt fleet", icon: "N", color: "bg-brand-50 text-brand-700", caption: "2–10 private EC2 instances", detail: "Renders the public application and acts as the server-side facade for calls to the private API.", protocol: "Nitro :3000" },
+  { id: "express" as ArchitectureDetailId, layer: "API", title: "Express core", icon: "E", color: "bg-violet-50 text-violet-700", caption: "2–6 private EC2 instances", detail: "Runs authentication, user, and redirect use cases behind a VPC-only load balancer.", protocol: "REST :4000" },
+  { id: "dynamodb" as ArchitectureDetailId, layer: "Data", title: "DynamoDB", icon: "D", color: "bg-amber-50 text-amber-700", caption: "On-demand single table with GSI and TTL", detail: "Stores users and redirects with point-in-time recovery, deletion protection, and asynchronous TTL expiry.", protocol: "AWS SDK" },
 ];
 
 const overviewPillars = [
   { icon: "↗", title: "Public experience", color: "bg-cyan-50 text-cyan-700", text: "Only CloudFront and the Nuxt load balancer form the public delivery path. Application instances remain private." },
   { icon: "↔", title: "Private service call", color: "bg-violet-50 text-violet-700", text: "Nuxt reaches Express through an internal ALB; security groups allow this service-to-service path explicitly." },
-  { icon: "D", title: "Shared data", color: "bg-amber-50 text-amber-700", text: "Express receives least-privilege read/write access to the platform-owned DynamoDB table through its EC2 role." },
+  { icon: "D", title: "Private data route", color: "bg-amber-50 text-amber-700", text: "Express reaches the platform-owned DynamoDB service through a gateway endpoint attached to VPC route tables." },
   { icon: "∞", title: "Independent delivery", color: "bg-emerald-50 text-emerald-700", text: "Client and server own separate ECR repositories, compute fleets, firewalls, and CodePipeline release flows." },
 ];
 
@@ -154,10 +153,10 @@ const trustZones = [
     { icon: "U", name: "Browser", color: "bg-white text-slate-700", text: "Loads pages, static assets, and calls same-origin Nuxt server routes." }, { icon: "C", name: "CloudFront", color: "bg-cyan-100 text-cyan-700", text: "Enforces HTTPS, applies response security headers, and caches /_nuxt assets." }, { icon: "W", name: "Client WAF", color: "bg-amber-100 text-amber-700", text: "Applies AWS common rules and a forwarded viewer-IP rate limit of 2,000 per five minutes." },
   ] },
   { label: "Zone 2 · VPC", name: "Application boundary", purpose: "Separate public rendering from private business logic and scale both independently.", border: "border-brand-200 bg-brand-50/60", labelColor: "text-brand-700", components: [
-    { icon: "L", name: "Public ALB", color: "bg-blue-50 text-blue-700", text: "Lives in public subnets and routes only to healthy Nuxt targets." }, { icon: "N", name: "Nuxt ASG", color: "bg-brand-100 text-brand-700", text: "Runs Nitro on port 3000 in private-with-egress subnets and scales from 2 to 10." }, { icon: "E", name: "Express ASG", color: "bg-violet-100 text-violet-700", text: "Runs the private API on port 4000 behind an internal ALB and scales from 2 to 6." },
+    { icon: "L", name: "Public Nuxt ALB", color: "bg-blue-50 text-blue-700", text: "Lives in public subnets and routes only to healthy Nuxt targets." }, { icon: "N", name: "Nuxt ASG", color: "bg-brand-100 text-brand-700", text: "Runs Nitro on port 3000 in private-with-egress subnets and scales from 2 to 10." }, { icon: "E", name: "Express ASG", color: "bg-violet-100 text-violet-700", text: "Runs the private API on port 4000 behind a Nuxt-only internal ALB and scales from 2 to 6." },
   ] },
   { label: "Zone 3 · Managed AWS", name: "Platform services boundary", purpose: "Keep durable data, images, logs, alerts, and delivery control outside individual instances.", border: "border-amber-200 bg-amber-50/60", labelColor: "text-amber-700", components: [
-    { icon: "D", name: "DynamoDB", color: "bg-amber-100 text-amber-700", text: "Provides on-demand persistence, GSI1 access patterns, PITR, and TTL cleanup." }, { icon: "R", name: "ECR", color: "bg-red-100 text-red-700", text: "Stores scanned Docker images for Nuxt and Express in separate retained repositories." }, { icon: "O", name: "CloudWatch + SNS", color: "bg-emerald-100 text-emerald-700", text: "Centralizes application logs, dashboard visibility, and an SSL-enforced alarm topic." },
+    { icon: "D", name: "DynamoDB + endpoint", color: "bg-amber-100 text-amber-700", text: "The managed table is reached privately through a gateway endpoint installed in the VPC route tables." }, { icon: "R", name: "ECR", color: "bg-red-100 text-red-700", text: "Stores scanned Docker images for Nuxt and Express in separate retained repositories." }, { icon: "O", name: "CloudWatch + SNS", color: "bg-emerald-100 text-emerald-700", text: "Centralizes application logs, dashboard visibility, and an SSL-enforced alarm topic." },
   ] },
 ];
 
@@ -208,8 +207,8 @@ const security = [
 
 const stackGroups = [
   { label: "Shared foundation", name: "Platform stacks", header: "bg-emerald-50/40", accent: "text-emerald-700", text: "Environment-wide resources are provisioned once and imported by application services through named CloudFormation outputs.", stacks: [
-    { name: "NetworkStack", namespace: "urlshortner-{env}-network", purpose: "Creates the regional network shared by Nuxt and Express.", creates: "VPC, two public /24 subnets, two private-with-egress /24 subnets, route tables, internet connectivity, and one NAT gateway.", depends: "No application stack. This is the first infrastructure foundation.", behavior: "Exports VPC, subnet, and route-table IDs so service stacks can reconstruct the shared VPC reference." },
-    { name: "DataStack", namespace: "urlshortner-{env}-data", purpose: "Owns durable application data independently from compute lifecycles.", creates: "One PAY_PER_REQUEST DynamoDB table with PK/SK, GSI1, AWS-managed encryption, ttl, PITR, and deletion protection.", depends: "No service stack. Express imports its table ARN and grants access to its instance role.", behavior: "RETAIN prevents stack deletion from destroying data; TTL performs asynchronous expiry without changing the domain model." },
+    { name: "NetworkStack", namespace: "urlshortner-{env}-network", purpose: "Creates the regional network shared by Nuxt and Express.", creates: "VPC, two public /24 subnets, two private-with-egress /24 subnets, route tables, one NAT gateway, and a DynamoDB gateway endpoint.", depends: "No application stack. This is the first infrastructure foundation.", behavior: "Exports VPC, subnet, and route-table IDs; the gateway endpoint keeps DynamoDB traffic on the AWS private network." },
+    { name: "DataStack", namespace: "urlshortner-{env}-data", purpose: "Owns durable application data independently from compute lifecycles.", creates: "One PAY_PER_REQUEST DynamoDB table with PK/SK, GSI1, AWS-managed encryption, ttl, PITR, and deletion protection.", depends: "Express imports its table ARN and reaches the service through the platform VPC gateway endpoint.", behavior: "RETAIN prevents stack deletion from destroying data; TTL performs asynchronous expiry without changing the domain model." },
     { name: "ObservabilityStack", namespace: "urlshortner-{env}-observability", purpose: "Provides shared operational visibility and alert transport.", creates: "CloudWatch dashboard, one-month retained application log group, and an SSL-enforced SNS alarm topic.", depends: "Independent foundation. Both compute stacks import the shared log group.", behavior: "Exports log identifiers for service IAM grants while dashboard and topic remain environment-level resources." },
   ] },
   { label: "Public application", name: "Client / Nuxt stacks", header: "bg-brand-50/40", accent: "text-brand-700", text: "The client owns the internet-facing delivery layer and can release independently from the private API.", stacks: [
@@ -229,6 +228,6 @@ const stackGroups = [
 
 const deploymentOrder = ["Platform: network/data/observability", "Service repositories", "Server compute", "Client compute", "Firewalls + CDN", "Pipelines"];
 
-function openDetail(index: number, id: DetailId) { selectedNode.value = index; activeDetail.value = id; }
+function openDetail(index: number, id: ArchitectureDetailId) { selectedNode.value = index; activeDetail.value = id; }
 useHead({ title: "Architecture — Linkora" });
 </script>

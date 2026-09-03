@@ -10,9 +10,9 @@ creating resources.
 
 - `RepositoryStack` owns the retained ECR repository for Express images.
 - `ComputeStack` imports the platform VPC, DynamoDB table, and application log
-  group, then creates a private Auto Scaling Group and internal ALB.
+  group, then creates a private Auto Scaling Group and Nuxt-only internal ALB.
 - `FirewallStack` associates regional WAF managed rules and IP rate limiting
-  with the internal ALB.
+  with the internal Express ALB.
 - `PipelineStack` builds the Docker image, pushes versioned and `current` tags,
   and rolls it out to tagged EC2 instances through CodeDeploy.
 

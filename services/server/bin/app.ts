@@ -25,8 +25,8 @@ const repositoryStack = RepositoryStack.build(app, base.stack("repository"));
 /**
  * Compute Stack
  * 
- * Provisions the Auto Scaling Group (EC2 instances) and the internal 
- * Application Load Balancer. It imports the VPC and DynamoDB table from the
+ * Provisions the private Auto Scaling Group (EC2 instances) and a Nuxt-only
+ * internal ALB. It imports the VPC and DynamoDB table from the
  * platform core stacks using cross-stack CloudFormation imports.
  */
 const computeStack = ComputeStack.build(app, base.stack("compute"));
